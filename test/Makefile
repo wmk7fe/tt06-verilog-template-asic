@@ -5,7 +5,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = tt_um_johnson.v
+PROJECT_SOURCES = tt_um_opt_encryptor.v
 
 ifneq ($(GATES),yes)
 
