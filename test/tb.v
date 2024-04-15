@@ -21,13 +21,6 @@ module tb ();
   wire [7:0] uio_out;
   wire [7:0] uio_oe;
 
-  reg reset;
-  reg we;   
-  reg [2:0] a1;
-  reg [7:0] wd;
-  reg [2:0] wa;
-  wire [7:0] rd1;
-
   // Replace tt_um_example with your module name:
   tt_um_opt_encryptor user_project (
 
@@ -65,21 +58,20 @@ module tb ();
     end
    
 initial begin
-      reset = 1; we = 0; a1 = 0; wd = 0; wa = 0; ui_in = 0; uio_in = 0; ena = 0; rst_n = 0;
-      #10;
-      reset = 0; rst_n = 1;
+        // Initialize all signals
+        rst_n = 0; ena = 0; ui_in = 0; uio_in = 0;
+        #10;
+        rst_n = 1;  // Release reset
 
-      we = 1; wa = 3'd5; wd = 8'hAA;
-      #10;
-      we = 0; a1 = 3'd5;
+        // encryption
+        ena = 1; ui_in = 8'hFF; uio_in = 8'b00000010; // Set up encryption
+        #20;
 
-      ena = 1; ui_in = 8'hFF; uio_in = 8'b00000010; // simulate encryption request
-      #20;
+        //decryption
+        ui_in = 8'h00; uio_in = 8'b10000010; // Set up decryption
 
-      //decryption
-      ui_in = 8'h00; uio_in = 8'b10000010; // simulate decryption request
-   
-      #100 $finish;
+        #100;
+        $finish; // End simulation after 100 ns
 end
 
 initial $monitor($time,,"[%b]\t%b\tq=%b",clk,ui_in[0],uo_out);
