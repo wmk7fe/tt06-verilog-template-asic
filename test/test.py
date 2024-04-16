@@ -65,7 +65,7 @@ async def test_otp_encryptor(dut):
     await ClockCycles(dut.clk, 5)
 
     # single test
-    for i in range 9:
+    for i in range(9):
         single_test(i)
 
 
