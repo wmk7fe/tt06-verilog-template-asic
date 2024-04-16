@@ -47,7 +47,7 @@ async def test_otp_encyrptor(dut):
     for i in range(9):
         await FallingEdge(clk)
         ena.value = 1
-        decrypt.value = 0
+        decrypt = 0
         data_in.value = data
         rnum_decrypt_in.value = decrypt
         
