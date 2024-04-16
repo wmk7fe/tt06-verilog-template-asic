@@ -24,7 +24,7 @@ async def test_otp_encryptor(dut):
     await ClockCycles(dut.clk, 5)
 
     # moved code for single test into for loop
-    for i in range(9):
+    for num in range(9):
         # Scenario: Encryption
         # Set up for encryption
         dut.ena.value = 1
