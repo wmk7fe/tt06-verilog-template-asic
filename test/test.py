@@ -36,7 +36,6 @@ async def test_otp_encryptor(dut):
     data_in.value = Force(0xab)
     ena.value = Force(1)
     dut._log.info(f'Encryptor input: {data_in.value}')
-    dut._log.info(f'current pad: {dut.pad_gen.value}')
     
     await(ClockCycles(clk, 1))
 
@@ -44,4 +43,3 @@ async def test_otp_encryptor(dut):
     data = data_out.value
     rnum = 0
     dut._log.info(f'Encrypted output: {data} ({rnum})')
-    dut._log.info(f'current pad: {dut.pad_gen.value}')
