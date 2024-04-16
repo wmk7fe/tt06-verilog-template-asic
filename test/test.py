@@ -51,7 +51,7 @@ async def test_otp_encryptor(dut):
     # start alex's changes - don't drive uio pins 4-7 as they are output pins
     # instead, drive pins 0-3 with 1 for decrypt for bit 0 and bits 1-3 to match the register num
     # dut.uio_in.value = BinaryValue("10000010")  # Decryption setup
-    dut_uio_in.value = (0xFF & ((rout << 1) + 1))
+    dut.uio_in.value = (0xFF & ((rout << 1) + 1))
     # end alex's changes
     
     await ClockCycles(dut.clk, 2)
