@@ -3,30 +3,12 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 from cocotb.binary import BinaryValue
 
-@cocotb.test()
-async def test_otp_encryptor(dut):
-    # Start the clock
-    clock = Clock(dut.clk, 10, units="ns")  # Clock period of 10 ns
-    cocotb.start_soon(clock.start())
-
-    # start alex's changes, ensure that there is a falling edge to trigger reset
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 5)
-    #end alex's changes
-    
-    # Reset the device
-    dut.rst_n.value = 0
-    dut.ena.value = 0
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    await ClockCycles(dut.clk, 5)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 5)
-
+# alex changes: move code to separate function to call repeatedly
+async def single_test(num):
     # Scenario: Encryption
     # Set up for encryption
     dut.ena.value = 1
-    dut.ui_in.value = 0xFF  # Example plaintext
+    dut.ui_in.value = 0xFF & num  # Example plaintext
 
     # start alex's changes, comment value and replace
     # dut.uio_in.value = BinaryValue("00000010")  # Encryption setup
@@ -58,5 +40,32 @@ async def test_otp_encryptor(dut):
 
     # Check if the decrypted output matches the original input (0xFF)
     decrypted_value = dut.uo_out.value
-    ## assert decrypted_value == 0xFF, f"Decryption failed: expected 0xFF, got {decrypted_value}"
+    ## assert decrypted_value == (0xFF & num), f"Decryption failed: expected {num}, got {decrypted_value}"
     dut._log.info(f'Decrypted output: {decrypted_value}')
+    
+
+@cocotb.test()
+async def test_otp_encryptor(dut):
+    # Start the clock
+    clock = Clock(dut.clk, 10, units="ns")  # Clock period of 10 ns
+    cocotb.start_soon(clock.start())
+
+    # start alex's changes, ensure that there is a falling edge to trigger reset
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+    #end alex's changes
+    
+    # Reset the device
+    dut.rst_n.value = 0
+    dut.ena.value = 0
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    await ClockCycles(dut.clk, 5)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+
+    # single test
+    for i in range 9:
+        single_test(i)
+
+
