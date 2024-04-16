@@ -39,5 +39,5 @@ async def test_otp_encryptor(dut):
 
     ena.value = Force(0)
     data = data_out.value
-    rnum = rnum_out.value >> 4
+    rnum = 0
     dut._log.info(f'Encrypted output: {data} ({rnum})')
