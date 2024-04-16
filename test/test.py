@@ -63,18 +63,6 @@ async def test_otp_encyrptor(dut):
     
         decrypt = 1
         ena.value = 1
-        data_in.value = 0
-        rnum_decrypt_in.value = ((rnum << 1) + decrypt)
-    
-        await FallingEdge(clk)
-        
-        ena.value = 0
-        dut._log.info(f'Decryptor  input: {data_in.value} ({rnum_decrypt_in.value})')
-        dut._log.info(f'stored pad value: {data_out.value}')
-    
-        await FallingEdge(clk)
-    
-        ena.value = 1
         data_in.value = (data)
         rnum_decrypt_in.value = ((rnum << 1) + decrypt)
     
