@@ -58,8 +58,8 @@ async def test_otp_encyrptor(dut):
     await FallingEdge(clk)
 
     decrypt = 1
-    data_in.value = Force(0)
-    rnum_decrypt_in.value = Force((rnum << 1) + decrypt)
+    data_in.value = 0
+    rnum_decrypt_in.value = ((rnum << 1) + decrypt)
 
     await FallingEdge(clk)
 
@@ -72,8 +72,8 @@ async def test_otp_encyrptor(dut):
 
     await FallingEdge(clk)
 
-    data_in.value = Force(data)
-    rnum_decrypt_in.value = Force((rnum << 1) + decrypt)
+    data_in.value = (data)
+    rnum_decrypt_in.value = ((rnum << 1) + decrypt)
 
     await FallingEdge(clk)
 
