@@ -2,6 +2,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 from cocotb.binary import BinaryValue
+from cocotb.handle import Force
 
 
 
