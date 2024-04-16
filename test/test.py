@@ -39,7 +39,12 @@ async def test_otp_encryptor(dut):
     
     await(ClockCycles(clk, 1))
 
+    dut._log.info(f'Encryptor input: {data_in.value}')
     ena.value = Force(0)
     data = data_out.value
     rnum = 0
+    dut._log.info(f'Encrypted output: {data} ({rnum})')
+
+    await(ClockCycles(clk, 1))
+
     dut._log.info(f'Encrypted output: {data} ({rnum})')
