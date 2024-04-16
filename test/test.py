@@ -43,36 +43,48 @@ async def test_otp_encyrptor(dut):
     await FallingEdge(clk)
 
     data_in.value = 0xab
-    ena.value = 1
+
+    for i in range(9):
+        await FallingEdge(clk)
+        ena.value = 1
+        decrypt.value = 0
+        data_in.value = data
+        rnum_decrypt_in.value = decrypt
+        
+        await FallingEdge(clk)
+        
+        ena.value = 0
+        dut._log.info(f'Encryptor  input: {data_in.value}')
+        data = data_out.value
+        rnum = rnum_out.value >> 4
+        dut._log.info(f'Encrypted output: {data_out.value} ({rnum_out.value >> 4})')
     
-    await FallingEdge(clk)
-
-    dut._log.info(f'Encryptor  input: {data_in.value}')
-    data = data_out.value
-    rnum = rnum_out.value >> 4
-    dut._log.info(f'Encrypted output: {data_out.value} ({rnum_out.value >> 4})')
-
-    await FallingEdge(clk)
-
-    decrypt = 1
-    data_in.value = 0
-    rnum_decrypt_in.value = ((rnum << 1) + decrypt)
-
-    await FallingEdge(clk)
-
-    dut._log.info(f'Decryptor  input: {data_in.value} ({rnum_decrypt_in.value})')
-    dut._log.info(f'stored pad value: {data_out.value}')
-
-    await FallingEdge(clk)
-
-    data_in.value = (data)
-    rnum_decrypt_in.value = ((rnum << 1) + decrypt)
-
-    await FallingEdge(clk)
-
-    dut._log.info(f'Decryptor  input: {data_in.value} ({rnum_decrypt_in.value})')
-    dut._log.info(f'stored pad value: {data_out.value}')
-
-    await FallingEdge(clk)
+        await FallingEdge(clk)
+    
+        decrypt = 1
+        ena.value = 1
+        data_in.value = 0
+        rnum_decrypt_in.value = ((rnum << 1) + decrypt)
+    
+        await FallingEdge(clk)
+        
+        ena.value = 0
+        dut._log.info(f'Decryptor  input: {data_in.value} ({rnum_decrypt_in.value})')
+        dut._log.info(f'stored pad value: {data_out.value}')
+    
+        await FallingEdge(clk)
+    
+        ena.value = 1
+        data_in.value = (data)
+        rnum_decrypt_in.value = ((rnum << 1) + decrypt)
+    
+        await FallingEdge(clk)
+    
+        ena.value = 0
+        data = data_out.value
+        dut._log.info(f'Decryptor  input: {data_in.value} ({rnum_decrypt_in.value})')
+        dut._log.info(f'Decryptor output: {data_out.value}')
+    
+        await FallingEdge(clk)
 
     
