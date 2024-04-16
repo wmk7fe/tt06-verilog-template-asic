@@ -3,47 +3,6 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 from cocotb.binary import BinaryValue
 
-# alex changes: move code to separate function to call repeatedly
-async def single_test(num):
-    # Scenario: Encryption
-    # Set up for encryption
-    dut.ena.value = 1
-    dut.ui_in.value = 0xFF & num  # Example plaintext
-
-    # start alex's changes, comment value and replace
-    # dut.uio_in.value = BinaryValue("00000010")  # Encryption setup
-    dut.uio_in.value = BinaryValue("00000000") 
-    # end alex's changes (this is unnecessary but rnum is only an input for decryption, cannot manually set register to be stored in)
-    
-    await ClockCycles(dut.clk, 2)
-
-    # Capture the output from encryption
-    encrypted_value = dut.uo_out.value
-    dut._log.info(f'Encrypted output: {encrypted_value}')
-
-    # start alex's changes, save register number
-    rout = (dut.uio_out.value & 0x70) >> 4
-    dut._log.info(f'Register number: {rout}')
-    # end alex's changes
-
-    # Scenario: Decryption
-    # Assuming the device can decrypt its own output
-    dut.ui_in.value = encrypted_value  # Feed the encrypted value as input
-
-    # start alex's changes - don't drive uio pins 4-7 as they are output pins
-    # instead, drive pins 0-3 with 1 for decrypt for bit 0 and bits 1-3 to match the register num
-    # dut.uio_in.value = BinaryValue("10000010")  # Decryption setup
-    dut.uio_in.value = (0xFF & ((rout << 1) + 1))
-    # end alex's changes
-    
-    await ClockCycles(dut.clk, 2)
-
-    # Check if the decrypted output matches the original input (0xFF)
-    decrypted_value = dut.uo_out.value
-    ## assert decrypted_value == (0xFF & num), f"Decryption failed: expected {num}, got {decrypted_value}"
-    dut._log.info(f'Decrypted output: {decrypted_value}')
-    
-
 @cocotb.test()
 async def test_otp_encryptor(dut):
     # Start the clock
@@ -64,8 +23,44 @@ async def test_otp_encryptor(dut):
     dut.rst_n.value = 1
     await ClockCycles(dut.clk, 5)
 
-    # single test
+    # moved code for single test into for loop
     for i in range(9):
-        single_test(i)
+        # Scenario: Encryption
+        # Set up for encryption
+        dut.ena.value = 1
+        dut.ui_in.value = 0xFF & num  # Example plaintext
+    
+        # start alex's changes, comment value and replace
+        # dut.uio_in.value = BinaryValue("00000010")  # Encryption setup
+        dut.uio_in.value = BinaryValue("00000000") 
+        # end alex's changes (this is unnecessary but rnum is only an input for decryption, cannot manually set register to be stored in)
+        
+        await ClockCycles(dut.clk, 2)
+    
+        # Capture the output from encryption
+        encrypted_value = dut.uo_out.value
+        dut._log.info(f'Encrypted output: {encrypted_value}')
+    
+        # start alex's changes, save register number
+        rout = (dut.uio_out.value & 0x70) >> 4
+        dut._log.info(f'Register number: {rout}')
+        # end alex's changes
+    
+        # Scenario: Decryption
+        # Assuming the device can decrypt its own output
+        dut.ui_in.value = encrypted_value  # Feed the encrypted value as input
+    
+        # start alex's changes - don't drive uio pins 4-7 as they are output pins
+        # instead, drive pins 0-3 with 1 for decrypt for bit 0 and bits 1-3 to match the register num
+        # dut.uio_in.value = BinaryValue("10000010")  # Decryption setup
+        dut.uio_in.value = (0xFF & ((rout << 1) + 1))
+        # end alex's changes
+        
+        await ClockCycles(dut.clk, 2)
+    
+        # Check if the decrypted output matches the original input (0xFF)
+        decrypted_value = dut.uo_out.value
+        ## assert decrypted_value == (0xFF & num), f"Decryption failed: expected {num}, got {decrypted_value}"
+        dut._log.info(f'Decrypted output: {decrypted_value}')
 
 
