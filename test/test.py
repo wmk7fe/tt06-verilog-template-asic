@@ -42,7 +42,7 @@ async def test_otp_encyrptor(dut):
 
     await FallingEdge(clk)
 
-    data_in.value = 0xab
+    data = 0xab
 
     for i in range(9):
         await FallingEdge(clk)
