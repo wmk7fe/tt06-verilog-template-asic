@@ -67,6 +67,7 @@ async def test_otp_encyrptor(dut):
         rnum_decrypt_in.value = ((rnum << 1) + decrypt)
     
         await FallingEdge(clk)
+        await FallingEdge(clk)
     
         ena.value = 0
         data = data_out.value
