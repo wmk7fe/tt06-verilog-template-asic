@@ -40,16 +40,6 @@ module tb ();
       .rst_n  (rst_n)     // not reset
   );
 
-    register_file rf (
-        .reset(reset),
-        .clock(clk),
-        .we(we),
-        .a1(a1),
-        .wd(wd),
-        .wa(wa),
-        .rd1(rd1)
-    );   
-
 
     //clock
     initial begin
